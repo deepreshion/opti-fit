@@ -1,0 +1,69 @@
+:root {
+  color-scheme: light;
+  font-family:
+    'Avenir Next',
+    'Segoe UI',
+    'SF Pro Display',
+    sans-serif;
+  background: #eef3f8;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  color: #0f172a;
+  background: #eef3f8;
+}
+
+#app {
+  min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.q-field--outlined .q-field__control {
+  border-radius: 18px;
+  min-height: 56px;
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.q-field__native,
+.q-field__input {
+  font-size: 1rem;
+}
+
+.q-btn {
+  letter-spacing: 0;
+  font-weight: 700;
+}
+
+.q-page-container {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
+}
+
+.q-page {
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (max-width: 420px) {
+  .q-field--outlined .q-field__control {
+    min-height: 52px;
+    border-radius: 16px;
+  }
+}

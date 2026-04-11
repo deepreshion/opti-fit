@@ -1,0 +1,14 @@
+node_modules/
+dist/
+
+.idea/
+.DS_Store
+Thumbs.db
+
+cloudflared.log
+cloudflared.err.log
+
+android/
+ios/
+
+*.local
