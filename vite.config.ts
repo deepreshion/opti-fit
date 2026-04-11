@@ -3,7 +3,8 @@ import vue from '@vitejs/plugin-vue';
 import { quasar, transformAssetUrls } from '@quasar/vite-plugin';
 import path from 'node:path';
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+  base: mode === 'production' ? '/opti-fit/' : '/',
   plugins: [
     vue({
       template: { transformAssetUrls },
@@ -21,4 +22,4 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 9000,
   },
-});
+}));
