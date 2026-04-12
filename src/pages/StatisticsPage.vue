@@ -736,6 +736,7 @@ const getWeekdayMetricValue = (day: (typeof monthlyStats.value.weekdayRhythm)[nu
   color: #0f172a;
   font-size: 1.04rem;
   font-weight: 800;
+  line-height: 1;
 }
 
 .weekly-focus__metric {
