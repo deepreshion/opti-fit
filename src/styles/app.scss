@@ -8,12 +8,21 @@
     'SF Pro Display',
     sans-serif;
   background: #eef3f8;
+  --app-bg: #eef3f8;
+  --app-text: #0f172a;
+  --app-primary: #1976d2;
   --workout-strength-color: #{$workout-strength-color};
   --workout-strength-surface: #{$workout-strength-surface};
   --workout-cardio-color: #{$workout-cardio-color};
   --workout-cardio-surface: #{$workout-cardio-surface};
   --workout-sport-color: #{$workout-sport-color};
   --workout-sport-surface: #{$workout-sport-surface};
+}
+
+:root[data-tg-theme='active'] {
+  --app-bg: var(--tg-theme-bg-color, #eef3f8);
+  --app-text: var(--tg-theme-text-color, #0f172a);
+  --app-primary: var(--tg-theme-primary-color, #1976d2);
 }
 
 *,
@@ -31,8 +40,8 @@ body {
 
 body {
   margin: 0;
-  color: #0f172a;
-  background: #eef3f8;
+  color: var(--app-text);
+  background: var(--app-bg);
 }
 
 #app {
@@ -56,6 +65,10 @@ body {
 .q-btn {
   letter-spacing: 0;
   font-weight: 700;
+}
+
+.q-btn.bg-primary {
+  background: var(--app-primary) !important;
 }
 
 .q-page-container {

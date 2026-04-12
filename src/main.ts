@@ -5,14 +5,16 @@ import quasarLangRu from 'quasar/lang/ru';
 
 import App from './App.vue';
 import router from './router';
+import { useTelegramSessionStore } from 'src/stores/telegram-session';
 
 import '@quasar/extras/material-icons/material-icons.css';
 import 'quasar/src/css/index.sass';
 import './styles/app.scss';
 
 const app = createApp(App);
+const pinia = createPinia();
 
-app.use(createPinia());
+app.use(pinia);
 app.use(router);
 app.use(Quasar, {
   plugins: {
@@ -21,5 +23,8 @@ app.use(Quasar, {
   },
   lang: quasarLangRu as QuasarLanguage,
 });
+
+const telegramSessionStore = useTelegramSessionStore(pinia);
+void telegramSessionStore.initialize();
 
 app.mount('#app');

@@ -1,12 +1,18 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { storeToRefs } from 'pinia';
 import { useWorkoutsStore } from 'src/stores/workouts';
+import { useTelegramSessionStore } from 'src/stores/telegram-session';
 import { getTodayIsoDate } from 'src/utils/date';
 
 const drawerOpen = ref(false);
 const router = useRouter();
 const workoutsStore = useWorkoutsStore();
+const telegramSessionStore = useTelegramSessionStore();
+const { isTelegram, tgUser, displayName } = storeToRefs(telegramSessionStore);
+
+const hasAvatar = computed(() => Boolean(tgUser.value?.photoUrl));
 
 const navigateHome = () => {
   drawerOpen.value = false;
@@ -46,6 +52,23 @@ const navigateToTodayWorkout = () => {
         <div class="app-brand">
           <p class="app-brand__eyebrow">Дневник тренировок</p>
           <q-toolbar-title class="app-title">OptiFit</q-toolbar-title>
+        </div>
+
+        <div class="app-user">
+          <q-chip
+            v-if="isTelegram"
+            dense
+            color="primary"
+            text-color="white"
+            class="app-user__env"
+          >
+            Telegram Mini App
+          </q-chip>
+          <q-avatar size="34px" class="app-user__avatar">
+            <img v-if="hasAvatar" :src="tgUser?.photoUrl" alt="Telegram avatar" />
+            <q-icon v-else name="person" />
+          </q-avatar>
+          <span class="app-user__name">{{ displayName }}</span>
         </div>
       </q-toolbar>
     </q-header>
@@ -105,12 +128,12 @@ const navigateToTodayWorkout = () => {
 .app-layout {
   background:
     radial-gradient(circle at top, rgba(64, 143, 255, 0.12), transparent 42%),
-    linear-gradient(180deg, #f4f7fb 0%, #eef3f8 100%);
+    linear-gradient(180deg, var(--app-bg) 0%, var(--app-bg) 100%);
 }
 
 .app-header {
-  background: rgba(255, 255, 255, 0.94);
-  color: #0f172a;
+  background: var(--app-bg);
+  color: var(--app-text);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(15, 23, 42, 0.08);
 }
@@ -143,6 +166,35 @@ const navigateToTodayWorkout = () => {
   font-size: 1.15rem;
   font-weight: 800;
   letter-spacing: 0.01em;
+}
+
+.app-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.app-user__env {
+  max-width: 148px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-user__avatar {
+  background: rgba(100, 116, 139, 0.18);
+  color: var(--app-text);
+}
+
+.app-user__name {
+  max-width: min(34vw, 180px);
+  color: var(--app-text);
+  font-size: 0.86rem;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .app-drawer {
@@ -195,6 +247,19 @@ const navigateToTodayWorkout = () => {
   .app-title {
     font-size: 0.92rem;
     line-height: 1.05;
+  }
+
+  .app-user {
+    gap: 6px;
+  }
+
+  .app-user__env {
+    display: none;
+  }
+
+  .app-user__name {
+    max-width: 27vw;
+    font-size: 0.76rem;
   }
 }
 </style>
