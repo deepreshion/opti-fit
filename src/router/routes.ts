@@ -11,6 +11,11 @@ const routes: RouteRecordRaw[] = [
         component: () => import('src/pages/HomePage.vue'),
       },
       {
+        path: 'statistics',
+        name: 'statistics',
+        component: () => import('src/pages/StatisticsPage.vue'),
+      },
+      {
         path: 'workouts/new',
         name: 'workout-create',
         component: () => import('src/pages/WorkoutEditorPage.vue'),

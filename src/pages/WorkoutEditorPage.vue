@@ -12,7 +12,7 @@ import {
 } from 'src/services/export/workout-export';
 import { useWorkoutsStore } from 'src/stores/workouts';
 import type { Workout, WorkoutDraft } from 'src/types/workout';
-import { isCardioWorkout, isStrengthWorkout } from 'src/types/workout';
+import { isCardioWorkout, isSportWorkout, isStrengthWorkout } from 'src/types/workout';
 import { getTodayIsoDate } from 'src/utils/date';
 import { createId } from 'src/utils/id';
 
@@ -67,12 +67,19 @@ onMounted(async () => {
           type: 'strength',
           exercises: workout.exercises.map((exercise) => ({ ...exercise })),
         }
-      : {
-          id: workout.id,
-          date: workout.date,
-          type: 'cardio',
-          cardio: { ...workout.cardio },
-        };
+      : isSportWorkout(workout)
+        ? {
+            id: workout.id,
+            date: workout.date,
+            type: 'sport',
+            sport: { ...workout.sport },
+          }
+        : {
+            id: workout.id,
+            date: workout.date,
+            type: 'cardio',
+            cardio: { ...workout.cardio },
+          };
   }
 });
 
@@ -142,6 +149,14 @@ const saveWorkout = async () => {
     $q.notify({
       type: 'warning',
       message: 'Укажите вид кардио',
+    });
+    return;
+  }
+
+  if (isSportWorkout(draft.value) && draft.value.sport.sport.trim().length === 0) {
+    $q.notify({
+      type: 'warning',
+      message: 'Укажите вид спорта',
     });
     return;
   }

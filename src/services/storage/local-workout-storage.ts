@@ -1,4 +1,4 @@
-import type { CardioExercise, Exercise, Workout } from 'src/types/workout';
+import type { CardioExercise, Exercise, SportSession, Workout } from 'src/types/workout';
 import { sortByUpdatedAtDesc } from 'src/utils/date';
 
 import type { WorkoutStorageService } from './workout-storage';
@@ -8,6 +8,7 @@ const STORAGE_KEY = 'opti-fit:workouts';
 type PersistedWorkout = Partial<Workout> & {
   exercises?: Partial<Exercise>[];
   cardio?: Partial<CardioExercise>;
+  sport?: Partial<SportSession>;
   type?: string;
 };
 
@@ -26,6 +27,12 @@ const normalizeCardio = (cardio: Partial<CardioExercise> | undefined): CardioExe
   calories: cardio?.calories === null || cardio?.calories === undefined ? null : Number(cardio.calories),
 });
 
+const normalizeSport = (sport: Partial<SportSession> | undefined): SportSession => ({
+  sport: String(sport?.sport ?? '').trim(),
+  duration: Number(sport?.duration ?? 0),
+  calories: sport?.calories === null || sport?.calories === undefined ? null : Number(sport.calories),
+});
+
 const normalizeWorkout = (workout: PersistedWorkout): Workout | null => {
   if (typeof workout.id !== 'string' || typeof workout.date !== 'string') {
     return null;
@@ -40,6 +47,17 @@ const normalizeWorkout = (workout: PersistedWorkout): Workout | null => {
       date: workout.date,
       type: 'cardio',
       cardio: normalizeCardio(workout.cardio),
+      createdAt,
+      updatedAt,
+    };
+  }
+
+  if (workout.type === 'sport') {
+    return {
+      id: workout.id,
+      date: workout.date,
+      type: 'sport',
+      sport: normalizeSport(workout.sport),
       createdAt,
       updatedAt,
     };

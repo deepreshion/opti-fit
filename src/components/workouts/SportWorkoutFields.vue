@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { CardioExercise } from 'src/types/workout';
+import type { SportSession } from 'src/types/workout';
 import WorkoutNameField from './WorkoutNameField.vue';
 
 defineProps<{
-  cardio: CardioExercise;
-  activitySuggestions: string[];
+  sport: SportSession;
+  sportSuggestions: string[];
 }>();
 
 const positiveNumberRule = (value: number) => value > 0 || 'Введите число больше нуля';
@@ -12,45 +12,35 @@ const nonNegativeRule = (value: number | null) => (value === null || value >= 0)
 </script>
 
 <template>
-  <q-card flat bordered class="cardio-card">
-    <q-card-section class="cardio-card__header">
+  <q-card flat bordered class="sport-card">
+    <q-card-section class="sport-card__header">
       <div>
-        <p class="cardio-card__eyebrow">Кардио</p>
-        <h3 class="cardio-card__title">{{ cardio.activity || 'Новая кардио-тренировка' }}</h3>
+        <p class="sport-card__eyebrow">Спорт</p>
+        <h3 class="sport-card__title">{{ sport.sport || 'Новая спортивная тренировка' }}</h3>
       </div>
     </q-card-section>
 
-    <q-card-section class="cardio-card__content">
+    <q-card-section class="sport-card__content">
       <WorkoutNameField
-        v-model="cardio.activity"
-        label="Вид активности"
-        :suggestions="activitySuggestions"
-        required-message="Введите значение"
+        v-model="sport.sport"
+        label="Вид спорта"
+        :suggestions="sportSuggestions"
+        required-message="Введите вид спорта"
       />
 
-      <div class="cardio-card__grid">
+      <div class="sport-card__grid">
         <q-input
-          v-model.number="cardio.duration"
+          v-model.number="sport.duration"
           outlined
           type="number"
           inputmode="numeric"
-          label="Минуты"
+          label="Время"
           suffix="мин"
           :rules="[positiveNumberRule]"
           lazy-rules
         />
         <q-input
-          v-model.number="cardio.distance"
-          outlined
-          type="number"
-          inputmode="decimal"
-          label="Дистанция"
-          suffix="км"
-          :rules="[nonNegativeRule]"
-          lazy-rules
-        />
-        <q-input
-          v-model.number="cardio.calories"
+          v-model.number="sport.calories"
           outlined
           type="number"
           inputmode="numeric"
@@ -65,7 +55,7 @@ const nonNegativeRule = (value: number | null) => (value === null || value >= 0)
 </template>
 
 <style scoped lang="scss">
-.cardio-card {
+.sport-card {
   border-radius: 24px;
   border-color: rgba(15, 23, 42, 0.08);
   background:
@@ -73,14 +63,14 @@ const nonNegativeRule = (value: number | null) => (value === null || value >= 0)
   box-shadow: 0 14px 28px rgba(15, 23, 42, 0.05);
 }
 
-.cardio-card__header {
+.sport-card__header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
 }
 
-.cardio-card__eyebrow {
+.sport-card__eyebrow {
   margin: 0 0 4px;
   color: #64748b;
   font-size: 0.78rem;
@@ -89,7 +79,7 @@ const nonNegativeRule = (value: number | null) => (value === null || value >= 0)
   letter-spacing: 0.06em;
 }
 
-.cardio-card__title {
+.sport-card__title {
   margin: 0;
   color: #0f172a;
   font-size: 1rem;
@@ -97,29 +87,29 @@ const nonNegativeRule = (value: number | null) => (value === null || value >= 0)
   font-weight: 800;
 }
 
-.cardio-card__content {
+.sport-card__content {
   display: grid;
   gap: 14px;
 }
 
-.cardio-card__grid {
+.sport-card__grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
 }
 
-.cardio-card__grid :deep(.q-field__control) {
+.sport-card__grid :deep(.q-field__control) {
   min-height: 46px;
 }
 
-.cardio-card__grid :deep(.q-field__native),
-.cardio-card__grid :deep(.q-field__input),
-.cardio-card__grid :deep(.q-field__label) {
+.sport-card__grid :deep(.q-field__native),
+.sport-card__grid :deep(.q-field__input),
+.sport-card__grid :deep(.q-field__label) {
   font-size: 0.86rem;
 }
 
 @media (max-width: 420px) {
-  .cardio-card__grid {
+  .sport-card__grid {
     gap: 6px;
   }
 }

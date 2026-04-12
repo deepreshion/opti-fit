@@ -1,3 +1,5 @@
+@use './quasar-variables' as *;
+
 :root {
   color-scheme: light;
   font-family:
@@ -6,6 +8,12 @@
     'SF Pro Display',
     sans-serif;
   background: #eef3f8;
+  --workout-strength-color: #{$workout-strength-color};
+  --workout-strength-surface: #{$workout-strength-surface};
+  --workout-cardio-color: #{$workout-cardio-color};
+  --workout-cardio-surface: #{$workout-cardio-surface};
+  --workout-sport-color: #{$workout-sport-color};
+  --workout-sport-surface: #{$workout-sport-surface};
 }
 
 *,

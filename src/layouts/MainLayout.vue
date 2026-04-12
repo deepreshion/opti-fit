@@ -13,6 +13,11 @@ const navigateHome = () => {
   router.push({ name: 'home' });
 };
 
+const navigateStatistics = () => {
+  drawerOpen.value = false;
+  router.push({ name: 'statistics' });
+};
+
 const navigateToTodayWorkout = () => {
   const today = getTodayIsoDate();
   drawerOpen.value = false;
@@ -55,7 +60,6 @@ const navigateToTodayWorkout = () => {
     >
       <div class="app-drawer__header">
         <p class="app-drawer__eyebrow">Меню</p>
-        <h2 class="app-drawer__title">Быстрые действия</h2>
       </div>
 
       <q-list padding class="app-drawer__list">
@@ -76,6 +80,16 @@ const navigateToTodayWorkout = () => {
           <q-item-section>
             <q-item-label>Добавить тренировку сегодня</q-item-label>
             <q-item-label caption>Сразу открыть форму на сегодняшнюю дату</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <q-item clickable v-ripple @click="navigateStatistics">
+          <q-item-section avatar>
+            <q-icon name="insights" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Статистика</q-item-label>
+            <q-item-label caption>Недельная и месячная аналитика по нагрузке</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>

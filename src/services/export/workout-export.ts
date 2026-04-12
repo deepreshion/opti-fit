@@ -1,5 +1,5 @@
 import type { Workout, WorkoutDraft } from 'src/types/workout';
-import { isStrengthWorkout } from 'src/types/workout';
+import { isSportWorkout, isStrengthWorkout } from 'src/types/workout';
 import { formatDisplayDate } from 'src/utils/date';
 
 export type ExportFormat = 'json' | 'text';
@@ -21,6 +21,20 @@ export const buildWorkoutExportData = (
         ...exercise,
         name: exercise.name.trim(),
       })),
+      createdAt: existingWorkout?.createdAt ?? timestamp,
+      updatedAt: existingWorkout?.updatedAt ?? timestamp,
+    };
+  }
+
+  if (draft.type === 'sport') {
+    return {
+      id: draft.id ?? existingWorkout?.id ?? 'draft-workout',
+      date: draft.date,
+      type: 'sport',
+      sport: {
+        ...draft.sport,
+        sport: draft.sport.sport.trim(),
+      },
       createdAt: existingWorkout?.createdAt ?? timestamp,
       updatedAt: existingWorkout?.updatedAt ?? timestamp,
     };
@@ -57,6 +71,20 @@ export const serializeWorkout = (workout: Workout, format: ExportFormat): string
         `   Вес: ${normalizeWeight(exercise.weight)}`,
         '',
       ]),
+    ];
+
+    return lines.join('\n').trim();
+  }
+
+  if (isSportWorkout(workout)) {
+    const lines = [
+      `Тренировка: ${formatDisplayDate(workout.date)}`,
+      'Тип: Спорт',
+      `ID: ${workout.id}`,
+      '',
+      `Вид спорта: ${workout.sport.sport}`,
+      `Длительность: ${workout.sport.duration} мин`,
+      `Калории: ${workout.sport.calories === null ? '-' : `${workout.sport.calories} ккал`}`,
     ];
 
     return lines.join('\n').trim();

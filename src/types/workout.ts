@@ -1,4 +1,4 @@
-export type WorkoutType = 'strength' | 'cardio';
+export type WorkoutType = 'strength' | 'cardio' | 'sport';
 
 export interface Exercise {
   id: string;
@@ -12,6 +12,12 @@ export interface CardioExercise {
   activity: string;
   duration: number;
   distance: number | null;
+  calories: number | null;
+}
+
+export interface SportSession {
+  sport: string;
+  duration: number;
   calories: number | null;
 }
 
@@ -33,7 +39,12 @@ export interface CardioWorkout extends BaseWorkout {
   cardio: CardioExercise;
 }
 
-export type Workout = StrengthWorkout | CardioWorkout;
+export interface SportWorkout extends BaseWorkout {
+  type: 'sport';
+  sport: SportSession;
+}
+
+export type Workout = StrengthWorkout | CardioWorkout | SportWorkout;
 
 export interface TrainingDay {
   date: string;
@@ -41,6 +52,7 @@ export interface TrainingDay {
   hasWorkout: boolean;
   hasStrengthWorkout: boolean;
   hasCardioWorkout: boolean;
+  hasSportWorkout: boolean;
 }
 
 interface BaseWorkoutDraft {
@@ -59,10 +71,18 @@ export interface CardioWorkoutDraft extends BaseWorkoutDraft {
   cardio: CardioExercise;
 }
 
-export type WorkoutDraft = StrengthWorkoutDraft | CardioWorkoutDraft;
+export interface SportWorkoutDraft extends BaseWorkoutDraft {
+  type: 'sport';
+  sport: SportSession;
+}
+
+export type WorkoutDraft = StrengthWorkoutDraft | CardioWorkoutDraft | SportWorkoutDraft;
 
 export const isStrengthWorkout = (workout: Workout | WorkoutDraft): workout is StrengthWorkout | StrengthWorkoutDraft =>
   workout.type === 'strength';
 
 export const isCardioWorkout = (workout: Workout | WorkoutDraft): workout is CardioWorkout | CardioWorkoutDraft =>
   workout.type === 'cardio';
+
+export const isSportWorkout = (workout: Workout | WorkoutDraft): workout is SportWorkout | SportWorkoutDraft =>
+  workout.type === 'sport';

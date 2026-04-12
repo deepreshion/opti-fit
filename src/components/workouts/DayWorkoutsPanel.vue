@@ -41,7 +41,7 @@ const formattedDate = computed(() => formatDisplayDate(props.selectedDate));
       Загружаем тренировки…
     </q-banner>
 
-    <q-banner v-else-if="workouts.length === 0" rounded class="day-panel__banner bg-grey-2 text-grey-8">
+    <q-banner v-else-if="workouts.length === 0" rounded class="day-panel__banner bg-grey-2 text-grey-8 text-center">
       Нет тренировок на выбранный день
     </q-banner>
 

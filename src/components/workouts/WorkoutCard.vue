@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import type { Workout } from 'src/types/workout';
-import { isStrengthWorkout } from 'src/types/workout';
+import { isSportWorkout, isStrengthWorkout } from 'src/types/workout';
 
 const props = defineProps<{
   workout: Workout;
@@ -18,7 +18,53 @@ const totalSets = computed(() =>
     : 0,
 );
 
-const typeLabel = computed(() => (props.workout.type === 'strength' ? 'Силовая' : 'Кардио'));
+const typeLabel = computed(() => {
+  if (props.workout.type === 'strength') {
+    return 'Силовая';
+  }
+
+  if (props.workout.type === 'sport') {
+    return 'Спорт';
+  }
+
+  return 'Кардио';
+});
+
+const titleText = computed(() => {
+  if (props.workout.type === 'strength') {
+    return `${props.workout.exercises.length} упражнений`;
+  }
+
+  if (isSportWorkout(props.workout)) {
+    return props.workout.sport.sport || 'Спорт';
+  }
+
+  return props.workout.cardio.activity || 'Кардио';
+});
+
+const badgeText = computed(() => {
+  if (props.workout.type === 'strength') {
+    return `${totalSets.value} подходов`;
+  }
+
+  if (isSportWorkout(props.workout)) {
+    return `${props.workout.sport.duration} мин`;
+  }
+
+  return `${props.workout.cardio.duration} мин`;
+});
+
+const badgeClass = computed(() => {
+  if (props.workout.type === 'strength') {
+    return 'workout-card__badge--strength';
+  }
+
+  if (props.workout.type === 'sport') {
+    return 'workout-card__badge--sport';
+  }
+
+  return 'workout-card__badge--cardio';
+});
 </script>
 
 <template>
@@ -26,18 +72,11 @@ const typeLabel = computed(() => (props.workout.type === 'strength' ? 'Сило�
     <q-card-section class="workout-card__header">
       <div>
         <p class="workout-card__label">{{ typeLabel }}</p>
-        <h3 class="workout-card__title">
-          {{ workout.type === 'strength' ? `${workout.exercises.length} упражнений` : workout.cardio.activity || 'Кардио' }}
-        </h3>
+        <h3 class="workout-card__title">{{ titleText }}</h3>
       </div>
 
-      <q-badge
-        rounded
-        :color="workout.type === 'strength' ? 'teal-2' : 'orange-2'"
-        :text-color="workout.type === 'strength' ? 'teal-10' : 'orange-10'"
-        class="workout-card__badge"
-      >
-        {{ workout.type === 'strength' ? `${totalSets} подходов` : `${workout.cardio.duration} мин` }}
+      <q-badge rounded class="workout-card__badge" :class="badgeClass">
+        {{ badgeText }}
       </q-badge>
     </q-card-section>
 
@@ -51,13 +90,23 @@ const typeLabel = computed(() => (props.workout.type === 'strength' ? 'Сило�
         </div>
       </template>
 
-      <div v-else class="exercise-row exercise-row--cardio">
+      <div v-else-if="workout.type === 'cardio'" class="exercise-row exercise-row--cardio">
         <div>
           <p class="exercise-row__name">{{ workout.cardio.activity }}</p>
           <p class="exercise-row__meta">
             {{ workout.cardio.duration }} мин
             <span v-if="workout.cardio.distance !== null"> · {{ workout.cardio.distance }} км</span>
             <span v-if="workout.cardio.calories !== null"> · {{ workout.cardio.calories }} ккал</span>
+          </p>
+        </div>
+      </div>
+
+      <div v-else class="exercise-row exercise-row--sport">
+        <div>
+          <p class="exercise-row__name">{{ workout.sport.sport }}</p>
+          <p class="exercise-row__meta">
+            {{ workout.sport.duration }} мин
+            <span v-if="workout.sport.calories !== null"> · {{ workout.sport.calories }} ккал</span>
           </p>
         </div>
       </div>
@@ -73,6 +122,8 @@ const typeLabel = computed(() => (props.workout.type === 'strength' ? 'Сило�
 </template>
 
 <style scoped lang="scss">
+@use 'src/styles/quasar-variables' as *;
+
 .workout-card {
   border-radius: 24px;
   border-color: rgba(15, 23, 42, 0.08);
@@ -106,6 +157,22 @@ const typeLabel = computed(() => (props.workout.type === 'strength' ? 'Сило�
 .workout-card__badge {
   padding: 8px 10px;
   font-weight: 700;
+  color: inherit;
+}
+
+.workout-card__badge--strength {
+  background: $workout-strength-surface;
+  color: $workout-strength-color;
+}
+
+.workout-card__badge--cardio {
+  background: $workout-cardio-surface;
+  color: $workout-cardio-color;
+}
+
+.workout-card__badge--sport {
+  background: $workout-sport-surface;
+  color: $workout-sport-color;
 }
 
 .workout-card__body {
@@ -120,7 +187,11 @@ const typeLabel = computed(() => (props.workout.type === 'strength' ? 'Сило�
 }
 
 .exercise-row--cardio {
-  background: rgba(255, 247, 237, 0.95);
+  background: $workout-cardio-surface;
+}
+
+.exercise-row--sport {
+  background: $workout-sport-surface;
 }
 
 .exercise-row__name {

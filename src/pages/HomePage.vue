@@ -30,6 +30,10 @@ const openCreateWorkout = () => {
   });
 };
 
+const openStatistics = () => {
+  router.push({ name: 'statistics' });
+};
+
 const openEditWorkout = (workoutId: string) => {
   router.push({
     name: 'workout-edit',
@@ -128,7 +132,7 @@ const deleteWorkout = (workoutId: string) => {
         <div class="home-hero__content">
           <p class="home-hero__eyebrow">Календарь</p>
           <h1 class="home-hero__title">Тренировки по дням</h1>
-          <p class="home-hero__text">Выберите дату и быстро откройте или добавьте тренировку.</p>
+          <p class="home-hero__text">Выберите дату и добавьте тренировку.</p>
         </div>
 
         <ExportActionMenu aria-label="Экспорт всех данных" :items="exportMenuItems" />

@@ -10,8 +10,7 @@ const { weekDayLabels, monthLabel, canGoNextMonth, calendarGrid, goToPreviousMon
   <section class="calendar-card">
     <div class="calendar-card__header">
       <div>
-        <p class="calendar-card__eyebrow">Календарь</p>
-        <h2 class="calendar-card__title">{{ monthLabel }}</h2>
+        <h3 class="calendar-card__title">{{ monthLabel }}</h3>
       </div>
 
       <div class="calendar-card__actions">
@@ -56,6 +55,7 @@ const { weekDayLabels, monthLabel, canGoNextMonth, calendarGrid, goToPreviousMon
         <span v-if="day.hasWorkout" class="calendar-day__markers" aria-hidden="true">
           <span v-if="day.hasStrengthWorkout" class="calendar-day__marker calendar-day__marker--strength"></span>
           <span v-if="day.hasCardioWorkout" class="calendar-day__marker calendar-day__marker--cardio"></span>
+          <span v-if="day.hasSportWorkout" class="calendar-day__marker calendar-day__marker--sport"></span>
         </span>
       </button>
     </div>
@@ -70,6 +70,10 @@ const { weekDayLabels, monthLabel, canGoNextMonth, calendarGrid, goToPreviousMon
         <span>Кардио</span>
       </div>
       <div class="calendar-legend__item">
+        <span class="calendar-legend__dot calendar-legend__dot--sport"></span>
+        <span>Спорт</span>
+      </div>
+      <div class="calendar-legend__item">
         <span class="calendar-legend__outline"></span>
         <span>Сегодня</span>
       </div>
@@ -78,6 +82,8 @@ const { weekDayLabels, monthLabel, canGoNextMonth, calendarGrid, goToPreviousMon
 </template>
 
 <style scoped lang="scss">
+@use 'src/styles/quasar-variables' as *;
+
 .calendar-card {
   padding: 16px;
   border-radius: 32px;
@@ -95,19 +101,14 @@ const { weekDayLabels, monthLabel, canGoNextMonth, calendarGrid, goToPreviousMon
   margin-bottom: 14px;
 }
 
-.calendar-card__eyebrow {
-  margin: 0 0 4px;
-  color: rgba(15, 23, 42, 0.62);
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-
 .calendar-card__title {
   margin: 0;
   color: #0f172a;
   font-size: 1.22rem;
+  line-height: 1;
   font-weight: 800;
   text-transform: capitalize;
+  padding-top: 10px;
 }
 
 .calendar-card__actions {
@@ -214,18 +215,18 @@ const { weekDayLabels, monthLabel, canGoNextMonth, calendarGrid, goToPreviousMon
 }
 
 .calendar-day__marker--strength {
-  background: #004d40;
+  background: $workout-strength-color;
 }
 
 .calendar-day__marker--cardio {
-  background: #e65100;
+  background: $workout-cardio-color;
 }
 
-.calendar-day--selected .calendar-day__marker--strength {
-  background: #ffffff;
+.calendar-day__marker--sport {
+  background: $workout-sport-color;
 }
 
-.calendar-day--selected .calendar-day__marker--cardio {
+.calendar-day--selected .calendar-day__marker {
   background: #ffffff;
 }
 
@@ -253,11 +254,15 @@ const { weekDayLabels, monthLabel, canGoNextMonth, calendarGrid, goToPreviousMon
 }
 
 .calendar-legend__dot--strength {
-  background: var(--q-primary);
+  background: $workout-strength-color;
 }
 
 .calendar-legend__dot--cardio {
-  background: var(--q-accent);
+  background: $workout-cardio-color;
+}
+
+.calendar-legend__dot--sport {
+  background: $workout-sport-color;
 }
 
 .calendar-legend__outline {

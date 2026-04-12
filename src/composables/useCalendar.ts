@@ -12,6 +12,7 @@ interface CalendarCell {
   hasWorkout: boolean;
   hasStrengthWorkout: boolean;
   hasCardioWorkout: boolean;
+  hasSportWorkout: boolean;
   isFuture: boolean;
 }
 
@@ -55,9 +56,10 @@ export const useCalendar = () => {
         isCurrentMonth: cellDate.getMonth() === month,
         isToday: isSameDate(cellDate, today),
         isSelected: isoDate === workoutsStore.selectedDate,
-        hasWorkout: markers.hasStrength || markers.hasCardio,
+        hasWorkout: markers.hasStrength || markers.hasCardio || markers.hasSport,
         hasStrengthWorkout: markers.hasStrength,
         hasCardioWorkout: markers.hasCardio,
+        hasSportWorkout: markers.hasSport,
         isFuture: cellDate.getTime() > today.getTime(),
       };
     });
