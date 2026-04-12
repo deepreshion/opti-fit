@@ -182,7 +182,7 @@ const deleteWorkout = (workoutId: string) => {
 
 .home-hero__eyebrow {
   margin: 0 0 6px;
-  color: #64748b;
+  color: var(--app-muted-text);
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -191,7 +191,7 @@ const deleteWorkout = (workoutId: string) => {
 
 .home-hero__title {
   margin: 0;
-  color: #0f172a;
+  color: var(--app-text);
   font-size: 1.3rem;
   font-weight: 900;
   line-height: 1.08;
@@ -199,7 +199,7 @@ const deleteWorkout = (workoutId: string) => {
 
 .home-hero__text {
   margin: 6px 0 0;
-  color: #64748b;
+  color: var(--app-muted-text);
   font-size: 0.9rem;
   line-height: 1.4;
 }

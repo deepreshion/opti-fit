@@ -11,6 +11,9 @@
   --app-bg: #eef3f8;
   --app-text: #0f172a;
   --app-primary: #1976d2;
+  --app-surface: #ffffff;
+  --app-surface-muted: #f8fafc;
+  --app-muted-text: #64748b;
   --workout-strength-color: #{$workout-strength-color};
   --workout-strength-surface: #{$workout-strength-surface};
   --workout-cardio-color: #{$workout-cardio-color};
@@ -23,6 +26,15 @@
   --app-bg: var(--tg-theme-bg-color, #eef3f8);
   --app-text: var(--tg-theme-text-color, #0f172a);
   --app-primary: var(--tg-theme-primary-color, #1976d2);
+  --app-surface: var(--tg-theme-secondary-bg-color, #ffffff);
+  --app-surface-muted: var(--tg-theme-secondary-bg-color, #f8fafc);
+  --app-muted-text: var(--tg-theme-hint-color, #64748b);
+}
+
+:root[data-tg-theme='active'][data-tg-color-scheme='dark'] {
+  --app-surface: var(--tg-theme-bg-color, #111827);
+  --app-surface-muted: var(--tg-theme-bg-color, #111827);
+  --app-muted-text: var(--tg-theme-hint-color, #9ca3af);
 }
 
 *,

@@ -154,7 +154,7 @@ const navigateToTodayWorkout = () => {
 
 .app-brand__eyebrow {
   margin: 0 0 2px;
-  color: #64748b;
+  color: var(--app-muted-text);
   font-size: 0.74rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -198,9 +198,10 @@ const navigateToTodayWorkout = () => {
 }
 
 .app-drawer {
+  color: var(--app-text);
   background:
     radial-gradient(circle at top right, rgba(15, 118, 110, 0.12), transparent 38%),
-    #f8fafc;
+    var(--app-surface-muted);
 }
 
 .app-drawer__header {
@@ -209,7 +210,7 @@ const navigateToTodayWorkout = () => {
 
 .app-drawer__eyebrow {
   margin: 0 0 4px;
-  color: #64748b;
+  color: var(--app-muted-text);
   font-size: 0.76rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -227,6 +228,14 @@ const navigateToTodayWorkout = () => {
   min-height: 64px;
   border-radius: 18px;
   margin: 0 8px 6px;
+}
+
+.app-drawer__list :deep(.q-item__label) {
+  color: var(--app-text);
+}
+
+.app-drawer__list :deep(.q-item__label--caption) {
+  color: var(--app-muted-text);
 }
 
 @media (max-width: 420px) {

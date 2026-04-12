@@ -89,7 +89,7 @@ const { weekDayLabels, monthLabel, canGoNextMonth, calendarGrid, goToPreviousMon
   border-radius: 32px;
   background:
     radial-gradient(circle at top right, rgba(0, 129, 167, 0.12), transparent 35%),
-    rgba(255, 255, 255, 0.94);
+    var(--app-surface);
   box-shadow: 0 20px 46px rgba(15, 23, 42, 0.08);
 }
 
@@ -103,7 +103,7 @@ const { weekDayLabels, monthLabel, canGoNextMonth, calendarGrid, goToPreviousMon
 
 .calendar-card__title {
   margin: 0;
-  color: #0f172a;
+  color: var(--app-text);
   font-size: 1.22rem;
   line-height: 1;
   font-weight: 800;
@@ -129,7 +129,7 @@ const { weekDayLabels, monthLabel, canGoNextMonth, calendarGrid, goToPreviousMon
 
 .calendar-grid__label {
   text-align: center;
-  color: rgba(15, 23, 42, 0.58);
+  color: var(--app-muted-text);
   font-size: 0.72rem;
   font-weight: 700;
 }
@@ -144,7 +144,7 @@ const { weekDayLabels, monthLabel, canGoNextMonth, calendarGrid, goToPreviousMon
   border: none;
   border-radius: 18px;
   background: rgba(253, 252, 220, 0.34);
-  color: #0f172a;
+  color: var(--app-text);
   font-size: 0.95rem;
   font-weight: 700;
   cursor: pointer;
@@ -163,13 +163,13 @@ const { weekDayLabels, monthLabel, canGoNextMonth, calendarGrid, goToPreviousMon
 }
 
 .calendar-day--muted {
-  color: rgba(15, 23, 42, 0.34);
-  background: rgba(15, 23, 42, 0.05);
+  color: var(--app-muted-text);
+  background: rgba(127, 127, 127, 0.12);
 }
 
 .calendar-day--future {
-  color: rgba(15, 23, 42, 0.24);
-  background: rgba(15, 23, 42, 0.04);
+  color: var(--app-muted-text);
+  background: rgba(127, 127, 127, 0.08);
   box-shadow: none;
 }
 
@@ -235,7 +235,7 @@ const { weekDayLabels, monthLabel, canGoNextMonth, calendarGrid, goToPreviousMon
   flex-wrap: wrap;
   gap: 8px 14px;
   margin-top: 12px;
-  color: rgba(15, 23, 42, 0.62);
+  color: var(--app-muted-text);
   font-size: 0.76rem;
   font-weight: 600;
 }

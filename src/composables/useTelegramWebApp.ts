@@ -99,6 +99,7 @@ const applyTelegramTheme = (themeParams: TelegramWebAppThemeParams | undefined) 
 
   if (!themeParams) {
     root.removeAttribute('data-tg-theme');
+    root.removeAttribute('data-tg-color-scheme');
     return;
   }
 
@@ -109,7 +110,9 @@ const applyTelegramTheme = (themeParams: TelegramWebAppThemeParams | undefined) 
   };
 
   setVar('--tg-theme-bg-color', themeParams.bg_color);
+  setVar('--tg-theme-secondary-bg-color', themeParams.secondary_bg_color);
   setVar('--tg-theme-text-color', themeParams.text_color);
+  setVar('--tg-theme-hint-color', themeParams.hint_color);
   setVar('--tg-theme-primary-color', themeParams.button_color ?? themeParams.link_color);
   root.setAttribute('data-tg-theme', 'active');
 };
@@ -159,6 +162,11 @@ export const useTelegramWebApp = () => {
     initData.value = nextWebApp.initData ?? '';
     colorScheme.value = nextWebApp.colorScheme ?? null;
     themeParams.value = nextWebApp.themeParams ?? null;
+    if (colorScheme.value) {
+      document.documentElement.setAttribute('data-tg-color-scheme', colorScheme.value);
+    } else {
+      document.documentElement.removeAttribute('data-tg-color-scheme');
+    }
 
     applyTelegramTheme(themeParams.value ?? undefined);
   };

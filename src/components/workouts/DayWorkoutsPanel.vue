@@ -37,11 +37,11 @@ const formattedDate = computed(() => formatDisplayDate(props.selectedDate));
       />
     </div>
 
-    <q-banner v-if="loading" rounded class="day-panel__banner bg-blue-1 text-primary">
+    <q-banner v-if="loading" rounded class="day-panel__banner day-panel__banner--loading">
       Загружаем тренировки…
     </q-banner>
 
-    <q-banner v-else-if="workouts.length === 0" rounded class="day-panel__banner bg-grey-2 text-grey-8 text-center">
+    <q-banner v-else-if="workouts.length === 0" rounded class="day-panel__banner day-panel__banner--empty text-center">
       Нет тренировок на выбранный день
     </q-banner>
 
@@ -70,7 +70,7 @@ const formattedDate = computed(() => formatDisplayDate(props.selectedDate));
 
 .day-panel__title {
   margin: 0;
-  color: #0f172a;
+  color: var(--app-text);
   font-size: 1.35rem;
   font-weight: 800;
 }
@@ -82,6 +82,16 @@ const formattedDate = computed(() => formatDisplayDate(props.selectedDate));
 .day-panel__banner {
   border-radius: 22px;
   padding: 16px 18px;
+}
+
+.day-panel__banner--loading {
+  background: rgba(2, 132, 199, 0.12);
+  color: var(--app-primary);
+}
+
+.day-panel__banner--empty {
+  background: var(--app-surface);
+  color: var(--app-muted-text);
 }
 
 .day-panel__list {
