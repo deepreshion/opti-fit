@@ -2,6 +2,7 @@ import { ref } from 'vue';
 
 const TELEGRAM_WEBAPP_SDK_URL = 'https://telegram.org/js/telegram-web-app.js';
 const TELEGRAM_SDK_TIMEOUT_MS = 3000;
+const FORCE_LIGHT_THEME_IN_TELEGRAM = true;
 
 let telegramSdkLoader: Promise<void> | null = null;
 
@@ -117,6 +118,21 @@ const applyTelegramTheme = (themeParams: TelegramWebAppThemeParams | undefined) 
   root.setAttribute('data-tg-theme', 'active');
 };
 
+const resetTelegramTheme = () => {
+  if (!isClientEnvironment()) {
+    return;
+  }
+
+  const root = document.documentElement;
+  root.removeAttribute('data-tg-theme');
+  root.removeAttribute('data-tg-color-scheme');
+  root.style.removeProperty('--tg-theme-bg-color');
+  root.style.removeProperty('--tg-theme-secondary-bg-color');
+  root.style.removeProperty('--tg-theme-text-color');
+  root.style.removeProperty('--tg-theme-hint-color');
+  root.style.removeProperty('--tg-theme-primary-color');
+};
+
 export const useTelegramWebApp = () => {
   const isTelegram = ref(false);
   const webApp = ref<TelegramWebApp | null>(null);
@@ -145,7 +161,7 @@ export const useTelegramWebApp = () => {
       initData.value = '';
       colorScheme.value = null;
       themeParams.value = null;
-      applyTelegramTheme(undefined);
+      resetTelegramTheme();
       return;
     }
 
@@ -162,6 +178,12 @@ export const useTelegramWebApp = () => {
     initData.value = nextWebApp.initData ?? '';
     colorScheme.value = nextWebApp.colorScheme ?? null;
     themeParams.value = nextWebApp.themeParams ?? null;
+
+    if (FORCE_LIGHT_THEME_IN_TELEGRAM) {
+      resetTelegramTheme();
+      return;
+    }
+
     if (colorScheme.value) {
       document.documentElement.setAttribute('data-tg-color-scheme', colorScheme.value);
     } else {
