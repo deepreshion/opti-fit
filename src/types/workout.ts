@@ -6,6 +6,15 @@ export interface Exercise {
   sets: number;
   reps: number;
   weight: number | null;
+  note: string;
+  splitBySets: boolean;
+  setEntries: ExerciseSet[];
+}
+
+export interface ExerciseSet {
+  id: string;
+  reps: number;
+  weight: number | null;
 }
 
 export interface CardioExercise {

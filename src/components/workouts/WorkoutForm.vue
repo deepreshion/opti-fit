@@ -13,6 +13,7 @@ import type {
 import { isCardioWorkout, isSportWorkout, isStrengthWorkout } from 'src/types/workout';
 import { createId } from 'src/utils/id';
 import { formatDisplayDate } from 'src/utils/date';
+import { getExerciseSetsCount } from 'src/utils/strength';
 import CardioWorkoutFields from './CardioWorkoutFields.vue';
 import ExerciseFieldset from './ExerciseFieldset.vue';
 import SportWorkoutFields from './SportWorkoutFields.vue';
@@ -50,6 +51,9 @@ const createEmptyStrengthDraft = (date: string, id?: string): StrengthWorkoutDra
       sets: 3,
       reps: 10,
       weight: 0,
+      note: '',
+      splitBySets: false,
+      setEntries: [],
     },
   ],
 });
@@ -96,7 +100,7 @@ const sportDraft = computed<SportWorkoutDraft | null>(() =>
 
 const strengthExerciseCount = computed(() => strengthDraft.value?.exercises.length ?? 0);
 const strengthTotalSets = computed(() =>
-  strengthDraft.value?.exercises.reduce((sum: number, exercise) => sum + exercise.sets, 0) ?? 0,
+  strengthDraft.value?.exercises.reduce((sum: number, exercise) => sum + getExerciseSetsCount(exercise), 0) ?? 0,
 );
 const cardioSummary = computed(() => cardioDraft.value?.cardio ?? null);
 const sportSummary = computed(() => sportDraft.value?.sport ?? null);
@@ -176,6 +180,9 @@ const addExercise = () => {
         sets: 3,
         reps: 10,
         weight: 0,
+        note: '',
+        splitBySets: false,
+        setEntries: [],
       },
     ],
   });
@@ -207,6 +214,9 @@ const addPresetExercise = (name: string) => {
         sets: 3,
         reps: 10,
         weight: 0,
+        note: '',
+        splitBySets: false,
+        setEntries: [],
       },
     ],
   });
@@ -268,7 +278,7 @@ const handleSubmit = async () => {
           <h2 class="workout-form__title">{{ formattedDate }}</h2>
         </div>
 
-        <div class="workout-form__type-toggle" role="tablist" aria-label="Тип тренировки">
+        <div v-if="!editing" class="workout-form__type-toggle" role="tablist" aria-label="Тип тренировки">
           <button
             v-for="option in workoutTypeOptions"
             :key="option.value"
@@ -758,3 +768,4 @@ const handleSubmit = async () => {
   }
 }
 </style>
+

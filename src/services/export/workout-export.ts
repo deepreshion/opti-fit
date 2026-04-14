@@ -1,10 +1,9 @@
 import type { Workout, WorkoutDraft } from 'src/types/workout';
 import { isSportWorkout, isStrengthWorkout } from 'src/types/workout';
 import { formatDisplayDate } from 'src/utils/date';
+import { formatExerciseProgress, hasSplitSets } from 'src/utils/strength';
 
 export type ExportFormat = 'json' | 'text';
-
-const normalizeWeight = (weight: number | null): string => (weight === null ? '-' : `${weight} кг`);
 
 export const buildWorkoutExportData = (
   draft: WorkoutDraft,
@@ -20,6 +19,7 @@ export const buildWorkoutExportData = (
       exercises: draft.exercises.map((exercise) => ({
         ...exercise,
         name: exercise.name.trim(),
+        note: exercise.note.trim(),
       })),
       createdAt: existingWorkout?.createdAt ?? timestamp,
       updatedAt: existingWorkout?.updatedAt ?? timestamp,
@@ -62,13 +62,12 @@ export const serializeWorkout = (workout: Workout, format: ExportFormat): string
     const lines = [
       `Тренировка: ${formatDisplayDate(workout.date)}`,
       'Тип: Силовая',
-      `ID: ${workout.id}`,
       '',
       ...workout.exercises.flatMap((exercise, index) => [
         `${index + 1}. ${exercise.name}`,
-        `   Подходы: ${exercise.sets}`,
-        `   Повторения: ${exercise.reps}`,
-        `   Вес: ${normalizeWeight(exercise.weight)}`,
+        `   Прогресс: ${formatExerciseProgress(exercise)}`,
+        `   Подходы: ${hasSplitSets(exercise) ? exercise.setEntries.length : exercise.sets}`,
+        ...(exercise.note ? [`   Заметка: ${exercise.note}`] : []),
         '',
       ]),
     ];
@@ -80,7 +79,6 @@ export const serializeWorkout = (workout: Workout, format: ExportFormat): string
     const lines = [
       `Тренировка: ${formatDisplayDate(workout.date)}`,
       'Тип: Спорт',
-      `ID: ${workout.id}`,
       '',
       `Вид спорта: ${workout.sport.sport}`,
       `Длительность: ${workout.sport.duration} мин`,
@@ -93,7 +91,6 @@ export const serializeWorkout = (workout: Workout, format: ExportFormat): string
   const lines = [
     `Тренировка: ${formatDisplayDate(workout.date)}`,
     'Тип: Кардио',
-    `ID: ${workout.id}`,
     '',
     `Активность: ${workout.cardio.activity}`,
     `Длительность: ${workout.cardio.duration} мин`,

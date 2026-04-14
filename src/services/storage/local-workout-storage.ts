@@ -1,4 +1,4 @@
-import type { CardioExercise, Exercise, SportSession, Workout } from 'src/types/workout';
+import type { CardioExercise, Exercise, ExerciseSet, SportSession, Workout } from 'src/types/workout';
 import { sortByUpdatedAtDesc } from 'src/utils/date';
 
 import type { WorkoutStorageService } from './workout-storage';
@@ -12,13 +12,28 @@ type PersistedWorkout = Partial<Workout> & {
   type?: string;
 };
 
-const normalizeExercise = (exercise: Partial<Exercise>, index: number): Exercise => ({
-  id: exercise.id ?? `exercise-${index}`,
-  name: String(exercise.name ?? '').trim(),
-  sets: Number(exercise.sets ?? 0),
-  reps: Number(exercise.reps ?? 0),
-  weight: exercise.weight === null || exercise.weight === undefined ? null : Number(exercise.weight),
+const normalizeSetEntry = (setEntry: Partial<ExerciseSet>, index: number): ExerciseSet => ({
+  id: setEntry.id ?? `set-${index}`,
+  reps: Number(setEntry.reps ?? 0),
+  weight: setEntry.weight === null || setEntry.weight === undefined ? null : Number(setEntry.weight),
 });
+
+const normalizeExercise = (exercise: Partial<Exercise>, index: number): Exercise => {
+  const normalizedSetEntries = Array.isArray(exercise.setEntries)
+    ? exercise.setEntries.map((setEntry, setIndex) => normalizeSetEntry(setEntry, setIndex))
+    : [];
+
+  return {
+    id: exercise.id ?? `exercise-${index}`,
+    name: String(exercise.name ?? '').trim(),
+    sets: Number(exercise.sets ?? 0),
+    reps: Number(exercise.reps ?? 0),
+    weight: exercise.weight === null || exercise.weight === undefined ? null : Number(exercise.weight),
+    note: String(exercise.note ?? '').trim(),
+    splitBySets: Boolean(exercise.splitBySets) || normalizedSetEntries.length > 0,
+    setEntries: normalizedSetEntries,
+  };
+};
 
 const normalizeCardio = (cardio: Partial<CardioExercise> | undefined): CardioExercise => ({
   activity: String(cardio?.activity ?? '').trim(),

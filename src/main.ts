@@ -27,6 +27,14 @@ app.use(Quasar, {
   lang: quasarLangRu as QuasarLanguage,
 });
 
+Notify.setDefaults({
+  position: 'top',
+  timeout: 2600,
+  progress: false,
+  actions: [{ icon: 'close', color: 'white' }],
+  classes: 'app-notify',
+});
+
 const telegramSessionStore = useTelegramSessionStore(pinia);
 void telegramSessionStore.initialize();
 

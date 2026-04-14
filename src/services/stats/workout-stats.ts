@@ -1,5 +1,6 @@
 import type { Workout, WorkoutType } from 'src/types/workout';
 import { formatCompactDate, fromIsoDate, toIsoDate } from 'src/utils/date';
+import { getExerciseSetsCount, getExerciseTotalReps, getExerciseTotalVolume } from 'src/utils/strength';
 
 export type StatsMetricKey = 'sessions' | 'minutes' | 'calories';
 
@@ -244,10 +245,9 @@ const buildDayStat = (date: Date, workouts: Workout[], todayIsoDate: string): Wo
         dayStat.strengthCount += 1;
 
         workout.exercises.forEach((exercise) => {
-          const exerciseWeight = exercise.weight ?? 0;
-          dayStat.sets += exercise.sets;
-          dayStat.reps += exercise.sets * exercise.reps;
-          dayStat.volume += exercise.sets * exercise.reps * exerciseWeight;
+          dayStat.sets += getExerciseSetsCount(exercise);
+          dayStat.reps += getExerciseTotalReps(exercise);
+          dayStat.volume += getExerciseTotalVolume(exercise);
         });
 
         return dayStat;

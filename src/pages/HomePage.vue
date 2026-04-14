@@ -6,7 +6,7 @@ import { copyToClipboard, useQuasar } from 'quasar';
 import ExportActionMenu, { type ExportActionItem } from 'src/components/shared/ExportActionMenu.vue';
 import WorkoutCalendar from 'src/components/calendar/WorkoutCalendar.vue';
 import DayWorkoutsPanel from 'src/components/workouts/DayWorkoutsPanel.vue';
-import { downloadWorkoutExport, serializeAllWorkouts } from 'src/services/export/workout-export';
+import { serializeAllWorkouts } from 'src/services/export/workout-export';
 import { useWorkoutsStore } from 'src/stores/workouts';
 
 const router = useRouter();
@@ -43,24 +43,12 @@ const openEditWorkout = (workoutId: string) => {
   });
 };
 
-const exportAllWorkouts = (format: 'json' | 'text') => {
-  const payload = serializeAllWorkouts(workoutsStore.workouts, format);
-  const fileName = `all-workouts.${format === 'json' ? 'json' : 'txt'}`;
-
-  downloadWorkoutExport(payload, fileName, format);
-
-  $q.notify({
-    type: 'positive',
-    message: format === 'json' ? 'Все данные экспортированы в JSON' : 'Все данные экспортированы строкой',
-  });
-};
-
-const copyAllWorkouts = async () => {
+const copyAllWorkouts = async (format: 'json' | 'text') => {
   try {
-    await copyToClipboard(serializeAllWorkouts(workoutsStore.workouts, 'text'));
+    await copyToClipboard(serializeAllWorkouts(workoutsStore.workouts, format));
     $q.notify({
       type: 'positive',
-      message: 'Все данные скопированы в буфер обмена',
+      message: format === 'json' ? 'JSON скопирован в буфер обмена' : 'Текст скопирован в буфер обмена',
     });
   } catch {
     $q.notify({
@@ -72,22 +60,16 @@ const copyAllWorkouts = async () => {
 
 const exportMenuItems = computed<ExportActionItem[]>(() => [
   {
-    label: 'Экспорт JSON',
-    caption: 'Скачать архив всех тренировок',
+    label: 'Копировать JSON',
+    caption: 'Скопировать все тренировки в JSON',
     icon: 'data_object',
-    action: () => exportAllWorkouts('json'),
+    action: () => copyAllWorkouts('json'),
   },
   {
-    label: 'Экспорт строкой',
-    caption: 'Скачать данные в читаемом виде',
+    label: 'Копировать строкой',
+    caption: 'Скопировать все тренировки в читаемом виде',
     icon: 'notes',
-    action: () => exportAllWorkouts('text'),
-  },
-  {
-    label: 'Копировать в буфер',
-    caption: 'Быстро поделиться всеми данными',
-    icon: 'content_copy',
-    action: copyAllWorkouts,
+    action: () => copyAllWorkouts('text'),
   },
 ]);
 

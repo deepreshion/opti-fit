@@ -94,9 +94,44 @@ body {
   max-width: 100%;
 }
 
+.q-notifications__list--top {
+  top: max(12px, env(safe-area-inset-top));
+}
+
+.q-notification.app-notify {
+  min-height: 48px;
+  border-radius: 14px;
+  padding: 10px 12px;
+  box-shadow:
+    0 10px 26px rgba(15, 23, 42, 0.18),
+    0 2px 10px rgba(15, 23, 42, 0.08);
+  backdrop-filter: blur(4px);
+}
+
+.q-notification.app-notify .q-notification__message {
+  font-size: 0.93rem;
+  line-height: 1.35;
+  font-weight: 600;
+}
+
+.q-notification.app-notify .q-notification__actions .q-btn {
+  min-height: 28px;
+}
+
 @media (max-width: 420px) {
   .q-field--outlined .q-field__control {
     min-height: 52px;
     border-radius: 16px;
+  }
+
+  .q-notifications__list--top {
+    top: max(10px, env(safe-area-inset-top));
+    left: 10px;
+    right: 10px;
+  }
+
+  .q-notification.app-notify {
+    border-radius: 12px;
+    padding: 9px 11px;
   }
 }

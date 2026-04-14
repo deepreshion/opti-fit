@@ -5,11 +5,7 @@ import { copyToClipboard, useQuasar } from 'quasar';
 
 import ExportActionMenu, { type ExportActionItem } from 'src/components/shared/ExportActionMenu.vue';
 import WorkoutForm from 'src/components/workouts/WorkoutForm.vue';
-import {
-  buildWorkoutExportData,
-  downloadWorkoutExport,
-  serializeWorkout,
-} from 'src/services/export/workout-export';
+import { buildWorkoutExportData, serializeWorkout } from 'src/services/export/workout-export';
 import { useWorkoutsStore } from 'src/stores/workouts';
 import type { Workout, WorkoutDraft } from 'src/types/workout';
 import { isCardioWorkout, isSportWorkout, isStrengthWorkout } from 'src/types/workout';
@@ -31,6 +27,9 @@ const createInitialDraft = (): WorkoutDraft => ({
       sets: 3,
       reps: 10,
       weight: null,
+      note: '',
+      splitBySets: false,
+      setEntries: [],
     },
   ],
 });
@@ -85,27 +84,14 @@ onMounted(async () => {
 
 const pageTitle = computed(() => (isEditing.value ? 'Редактировать тренировку' : 'Добавить тренировку'));
 
-const exportWorkout = (format: 'json' | 'text') => {
-  const exportableWorkout = buildWorkoutExportData(draft.value, currentWorkout.value);
-  const payload = serializeWorkout(exportableWorkout, format);
-  const fileName = `workout-${exportableWorkout.date}.${format === 'json' ? 'json' : 'txt'}`;
-
-  downloadWorkoutExport(payload, fileName, format);
-
-  $q.notify({
-    type: 'positive',
-    message: format === 'json' ? 'JSON экспортирован' : 'Текстовый экспортирован',
-  });
-};
-
-const copyWorkout = async () => {
+const copyWorkout = async (format: 'json' | 'text') => {
   try {
     const exportableWorkout = buildWorkoutExportData(draft.value, currentWorkout.value);
-    await copyToClipboard(serializeWorkout(exportableWorkout, 'text'));
+    await copyToClipboard(serializeWorkout(exportableWorkout, format));
 
     $q.notify({
       type: 'positive',
-      message: 'Тренировка скопирована в буфер обмена',
+      message: format === 'json' ? 'JSON скопирован в буфер обмена' : 'Тренировка скопирована строкой',
     });
   } catch {
     $q.notify({
@@ -117,22 +103,16 @@ const copyWorkout = async () => {
 
 const exportMenuItems = computed<ExportActionItem[]>(() => [
   {
-    label: 'Экспорт JSON',
-    caption: 'Скачать текущую тренировку как файл',
+    label: 'Копировать JSON',
+    caption: 'Скопировать текущую тренировку в JSON',
     icon: 'data_object',
-    action: () => exportWorkout('json'),
+    action: () => copyWorkout('json'),
   },
   {
-    label: 'Экспорт строкой',
-    caption: 'Сохранить тренировку в читаемом виде',
+    label: 'Копировать строкой',
+    caption: 'Скопировать тренировку в читаемом виде',
     icon: 'notes',
-    action: () => exportWorkout('text'),
-  },
-  {
-    label: 'Копировать в буфер',
-    caption: 'Быстро поделиться текущей тренировкой',
-    icon: 'content_copy',
-    action: copyWorkout,
+    action: () => copyWorkout('text'),
   },
 ]);
 
@@ -236,7 +216,7 @@ const requestDelete = () => {
           <h1 class="editor-page__title">{{ pageTitle }}</h1>
         </div>
 
-        <ExportActionMenu :items="exportMenuItems" />
+        <ExportActionMenu v-if="isEditing" :items="exportMenuItems" aria-label="Экспорт тренировки" />
       </div>
 
       <q-banner v-if="workoutsStore.errorMessage" rounded class="bg-red-1 text-negative">

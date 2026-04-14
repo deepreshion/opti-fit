@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { copyToClipboard, useQuasar } from 'quasar';
+import ExportActionMenu, { type ExportActionItem } from 'src/components/shared/ExportActionMenu.vue';
 import type { Workout } from 'src/types/workout';
 import { isSportWorkout, isStrengthWorkout } from 'src/types/workout';
+import { serializeWorkout } from 'src/services/export/workout-export';
+import { formatExerciseProgress, getExerciseSetsCount } from 'src/utils/strength';
 
 const props = defineProps<{
   workout: Workout;
@@ -12,9 +16,11 @@ const emit = defineEmits<{
   delete: [workoutId: string];
 }>();
 
+const $q = useQuasar();
+
 const totalSets = computed(() =>
   isStrengthWorkout(props.workout)
-    ? props.workout.exercises.reduce((accumulator, exercise) => accumulator + exercise.sets, 0)
+    ? props.workout.exercises.reduce((accumulator, exercise) => accumulator + getExerciseSetsCount(exercise), 0)
     : 0,
 );
 
@@ -65,6 +71,36 @@ const badgeClass = computed(() => {
 
   return 'workout-card__badge--cardio';
 });
+
+const copyWorkout = async (format: 'json' | 'text') => {
+  try {
+    await copyToClipboard(serializeWorkout(props.workout, format));
+    $q.notify({
+      type: 'positive',
+      message: format === 'json' ? 'JSON тренировки скопирован' : 'Тренировка скопирована строкой',
+    });
+  } catch {
+    $q.notify({
+      type: 'negative',
+      message: 'Не удалось скопировать тренировку',
+    });
+  }
+};
+
+const exportMenuItems = computed<ExportActionItem[]>(() => [
+  {
+    label: 'Копировать JSON',
+    caption: 'Скопировать тренировку в JSON',
+    icon: 'data_object',
+    action: () => copyWorkout('json'),
+  },
+  {
+    label: 'Копировать строкой',
+    caption: 'Скопировать тренировку в читаемом виде',
+    icon: 'notes',
+    action: () => copyWorkout('text'),
+  },
+]);
 </script>
 
 <template>
@@ -85,7 +121,8 @@ const badgeClass = computed(() => {
         <div v-for="exercise in workout.exercises" :key="exercise.id" class="exercise-row">
           <div>
             <p class="exercise-row__name">{{ exercise.name }}</p>
-            <p class="exercise-row__meta">{{ exercise.sets }} x {{ exercise.reps }} · {{ exercise.weight ?? 0 }} кг</p>
+            <p class="exercise-row__meta">{{ formatExerciseProgress(exercise) }}</p>
+            <p v-if="exercise.note" class="exercise-row__note">{{ exercise.note }}</p>
           </div>
         </div>
       </template>
@@ -115,8 +152,11 @@ const badgeClass = computed(() => {
     <q-separator />
 
     <q-card-actions align="between" class="workout-card__actions">
-      <q-btn no-caps rounded flat icon="edit" color="primary" label="Редактировать" @click="emit('edit', workout.id)" />
-      <q-btn no-caps rounded flat icon="delete" color="negative" label="Удалить" @click="emit('delete', workout.id)" />
+      <div class="workout-card__actions-group">
+        <q-btn no-caps rounded flat icon="edit" color="primary" label="Редактировать" @click="emit('edit', workout.id)" />
+        <q-btn no-caps rounded flat icon="delete" color="negative" label="Удалить" @click="emit('delete', workout.id)" />
+      </div>
+      <ExportActionMenu :items="exportMenuItems" aria-label="Экспорт тренировки" icon="ios_share" />
     </q-card-actions>
   </q-card>
 </template>
@@ -207,7 +247,21 @@ const badgeClass = computed(() => {
   font-size: 0.9rem;
 }
 
+.exercise-row__note {
+  margin: 6px 0 0;
+  color: #475569;
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
 .workout-card__actions {
   padding: 10px 12px 14px;
+  gap: 8px;
+}
+
+.workout-card__actions-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
 }
 </style>

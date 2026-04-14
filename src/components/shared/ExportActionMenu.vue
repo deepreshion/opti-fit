@@ -66,6 +66,11 @@ const runAction = async (item: ExportActionItem) => {
   box-shadow: 0 18px 40px rgba(15, 23, 42, 0.14);
 }
 
+:deep(.q-item__section--avatar) {
+  min-width: auto;
+  padding-right: 8px;
+}
+
 .export-menu__list {
   min-width: 236px;
   padding: 8px;
